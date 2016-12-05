@@ -29,15 +29,17 @@ int iThreshold = 130;
 int iXPos;
 int iYPos;
 int iXInitPos = 25;
-int iYInitPos = 52;
+int iYInitPos = 56;
+// Relative origin
+int iYRelPos;
 
 // Fret position mapping
 
 // String position mapping
 
-int iOneStringSteps = 57;
-int iPluckE = iOneStringSteps;
-int iPluckA = iOneStringSteps * 2;
+int iOneStringStep = 50;
+int iPluckE = iOneStringStep;
+int iPluckA = iOneStringStep * 2;
 
 void setup() {
   // put your setup code here, to run once:
@@ -131,6 +133,7 @@ void processMsg(String &txtMsg) {
      txtMsg = "";
      // return;
    }
+   
    // Case 8 - PluckE
    if(txtMsg == "PluckE") {
      // Set direction pin
@@ -138,6 +141,23 @@ void processMsg(String &txtMsg) {
      txtMsg = "";
      // return;
    }
+   
+   // Case 9 - moveOneStringFWD
+   if(txtMsg == "moveOneStringFWD") {
+     // Set direction pin
+     moveOneStringFWD();
+     txtMsg = "";
+     // return;
+   }
+   
+   // Case 10 - moveOneStringBWD
+   if(txtMsg == "moveOneStringBWD") {
+     // Set direction pin
+     moveOneStringBWD();
+     txtMsg = "";
+     // return;
+   }   
+   
    // Case list - list all functions
    
    // Case else - no function found
@@ -211,6 +231,7 @@ void homeY() {
   bSafe = false;
   movy(iFwd, iYInitPos , 1);
   iYPos = iYInitPos; 
+  iYRelPos = 0;
   bSafe = true;  
 }
 
@@ -219,10 +240,125 @@ void homeXY() {
   homeX();
 }
 
-void PluckE() {
+void PluckEOld() {
   // check position and compute distance
-  
+  int iMove;
+  if(iYPos > iYInitPos) {
+    iMove = iYPos - iPluckE;
+    movy(iBwd, iPluckE, 1);
+    iYPos = iYInitPos;
+    return;
+  }
+  // Otherwise, we are in the init position, just pluck
   // decide if going fwd or bwd
-  
    movy(iFwd, iPluckE, 1);
+   iYPos = iYInitPos + iPluckE;
 }
+
+void PluckEOld2() {
+  // we are at the top
+  if(iYPos == iYInitPos) {
+    movy(iFwd, iPluckE, 1);
+    iYPos = iYInitPos + iPluckE;    
+    return;
+  } 
+  // we are above A
+  if(iYPos == iYInitPos + iPluckE) {
+    movy(iBwd, iPluckE, 1);
+    iYPos = iYInitPos;
+    return;    
+  }
+  // we are further down
+  if(iYPos > iYInitPos + iPluckE) {
+    int iMove = iYPos - iYInitPos;
+    movy(iBwd, iPluckE, 1);
+    iYPos = iYInitPos;
+    return;
+  }
+}
+
+void PluckE() {
+ // if we are at top
+ // move forward one string
+ if(iYPos == iYInitPos) {
+    movy(iFwd, iOneStringStep, 1);
+    iYPos = iYPos + iOneStringStep;
+    Serial.print("Current absolute position = ");
+    Serial.println(iYPos);
+   return;   
+ } 
+ // anything else, move back to iYinitPos
+ if(iYPos > iYInitPos) {
+    int iMove = iYPos - iYInitPos;
+    movy(iBwd, iMove, 1);
+    iYPos = iYInitPos;
+    return;   
+ }
+}
+
+void pluckString(int iIndex) {
+   // iIndex
+   // 1-E, 2-A, 3-D, 4-G, 5-B, 6-E
+   int iMove;
+   if(iYRelPos < (iOneStep * iIndex)) {
+      iMove = (iOneStep * iIndex) - iYRelPos;
+      movy(iFwd, iMove, 1);
+      iYRelPos =+ 
+   }
+}
+
+
+void Pluck(int iPluckIndex) {
+ // if we are at top
+ // move forward one string
+ if(iYPos == iYInitPos) {
+    movy(iFwd, iOneStringStep, 1);
+    iYPos = iYPos + iOneStringStep;
+    Serial.print("Current absolute position = ");
+    Serial.println(iYPos);
+   return;   
+ } 
+ // anything else, move back to iYinitPos
+ if(iYPos > iYInitPos) {
+    int iMove = iYPos - iYInitPos;
+    movy(iBwd, iMove, 1);
+    iYPos = iYInitPos;
+    return;   
+ }
+}
+
+void moveOneStringFWD() {
+    movy(iFwd, iOneStringStep, 1);
+    iYPos = iYPos + iOneStringStep;
+    Serial.print("Current absolute position = ");
+    Serial.println(iYPos);    
+}
+
+void moveOneStringBWD() {
+    movy(iBwd, iOneStringStep, 1);
+    iYPos = iYPos - iOneStringStep;
+    Serial.print("Current absolute position = ");
+    Serial.println(iYPos);    
+}
+
+void PluckA() {
+  // check position and compute distance
+  if(iYPos < (iPluckA + iYInitPos)) {
+    int iMove = iYPos - iPluckA;
+    movy(iBwd, iPluckA, 1);
+    iYPos = iYInitPos;
+    return;
+  }
+  // if
+  // Otherwise, we are in the init position, just pluck
+  // decide if going fwd or bwd
+   
+   movy(iFwd, iPluckE, 1);
+   iYPos = iYInitPos + iPluckE;
+}
+
+/*
+void movAbsPos(int iPos) {
+  if(iPos 
+}
+*/
