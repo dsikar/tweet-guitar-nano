@@ -32,6 +32,7 @@ int iXInitPos = 25;
 int iYInitPos = 56;
 // Relative origin
 int iYRelPos;
+int iXRelPos;
 
 // Fret position mapping
 
@@ -180,7 +181,47 @@ void processMsg(String &txtMsg) {
      pluckString(6);
      txtMsg = "";
      // return;
-   }   
+   } 
+ 
+     // Case 14 - slide1
+   if(txtMsg == "slide1") {
+     // Set direction pin
+     slideFret(1);
+     txtMsg = "";
+     // return;
+   }    
+ 
+      // Case 15 - slide2
+   if(txtMsg == "slide2") {
+     // Set direction pin
+     slideFret(2);
+     txtMsg = "";
+     // return;
+   }  
+ 
+   // Case 16 - slide3
+   if(txtMsg == "slide3") {
+     // Set direction pin
+     slideFret(3);
+     txtMsg = "";
+     // return;
+   }  
+   
+   // Case 17 - slide4
+   if(txtMsg == "slide4") {
+     // Set direction pin
+     slideFret(4);
+     txtMsg = "";
+     // return;
+   }
+ 
+    // Case 18 - slide5
+   if(txtMsg == "slide5") {
+     // Set direction pin
+     slideFret(5);
+     txtMsg = "";
+     // return;
+   }    
    
    //pluckString
    
@@ -245,6 +286,7 @@ void homeX() {
   bSafe = false;
   movx(iFwd, iXInitPos, 1);
   iXPos = iXInitPos;
+  iXRelPos = 0;
   bSafe = true;  
 }
 
@@ -300,5 +342,44 @@ void pluckString(int iIndex) {
    }   
 }
 
+int getXPos(int iIndex) {
+  // dummy return value
+  return (iIndex) * 50;
+  // create lookup table from calibration 
+  
+  
+}
 
-
+void slideFret(int iIndex) {
+   // iIndex
+   // 1-F#, 2-G, 3-G#, 4-A, etc
+   
+      // Safety net
+   if(iIndex > 16) {
+     return;
+   }
+   
+   int iMove;
+   int iMoveXPos = getXPos(iIndex);
+   Serial.print("iMoveXPos = ");
+   Serial.println(iMoveXPos);
+   Serial.print("iXRelPos = ");
+   Serial.println(iXRelPos);   
+   if(iXRelPos < iMoveXPos) {
+     iMove = iMoveXPos - iXRelPos;
+     Serial.print("iMove = ");
+     Serial.println(iMove);
+     movx(iFwd, iMove, 1);
+      iXRelPos = iXRelPos + iMove;
+      Serial.print("iXRelPos = ");
+       Serial.println(iXRelPos); 
+      return;
+   }
+   
+   if(iXRelPos > iMoveXPos) {
+     iMove = iXRelPos - iMoveXPos;
+     movx(iBwd, iMove, 1);
+      iXRelPos = iXRelPos - iMove;
+      return;
+   }
+}
