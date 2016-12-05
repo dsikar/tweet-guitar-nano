@@ -14,6 +14,10 @@ int iYDirPin = 2;
 int iFwd = 1;
 int iBwd = 0;
 
+// Exception case flag for home
+
+bool bSafe;
+
 // End Stop expected threshold AD Conversion
 int iThreshold = 130;
 
@@ -105,6 +109,13 @@ void processMsg(String &txtMsg) {
      txtMsg = "";
      // return;
    }   
+   // Case 7 - homeXY
+   if(txtMsg == "homeXY") {
+     // Set direction pin
+     homeXY();
+     txtMsg = "";
+     // return;
+   }
    // Case list - list all functions
    
    // Case else - no function found
@@ -131,25 +142,38 @@ void movx(int iDir, int iSteps, int iDelay) {
     Serial.print(txtMsg);
     Serial.println("*");
   } 
-  digitalWrite(iXDirPin, iDir);
+  
+  digitalWrite(iXDirPin, iDir); 
+  
   for(int i = 0; i < iSteps; i++) {
     digitalWrite(iXStepPin, LOW);
     delay(iDelay);
     digitalWrite(iXStepPin, HIGH);
+    if(bEnd() && bSafe) {
+      break; 
+    }
   }
+  
+  
 }
 
 void movy(int iDir, int iSteps, int iDelay) {
+  if(SERIAL_DEBUG) {
     Serial.print("Echoing back message: *");
     Serial.print(txtMsg);
     Serial.println("*");
-    digitalWrite(iYDirPin, iDir);
+  }    
    
-    for(int i = 0; i < iSteps; i++) {
-      digitalWrite(iYStepPin, LOW);
-      delay(iDelay);
-      digitalWrite(iYStepPin, HIGH);
+  digitalWrite(iYDirPin, iDir);
+
+  for(int i = 0; i < iSteps; i++) {
+    digitalWrite(iYStepPin, LOW);
+    delay(iDelay);
+    digitalWrite(iYStepPin, HIGH);
+    if(bEnd() && bSafe) {
+      break; 
     }
+  }
 }
 
 bool bEnd() {
@@ -162,11 +186,22 @@ bool bEnd() {
 void homeX() {
   while(!(bEnd())) {
     movx(iBwd, 1, 1);  
-  } 
+  }
+  bSafe = false;
+  movx(iFwd, 25, 1);
+  bSafe = true;  
 }
 
 void homeY() {
   while(!(bEnd())) {
-    movy(iBwd, 1, 1000);  
+    movy(iBwd, 1, 1);  
   } 
+  bSafe = false;
+  movy(iFwd, 45, 1);
+  bSafe = true;  
+}
+
+void homeXY() {
+  homeY();
+  homeX();
 }
