@@ -88,30 +88,30 @@ void processMsg(String &txtMsg) {
    txtMsg.trim();
    if(txtMsg == "fwdx") {
      // Set direction pin
-     movx(iFwd, 5, 6);
+     movx(iFwd, 1, 6);
      txtMsg = "";
-    // return;
+    return;
    }
-   // Case 2 - bacx
+   // Case 2 - bwdx
    if(txtMsg == "bwdx") {
      // Set direction pin
-    movx(iBwd, 5, 6);
+    movx(iBwd, 1, 6);
     txtMsg = "";
-    // return;
+    return;
    }   
    // Case 3 - fwdy
    if(txtMsg == "fwdy") {
      // Set direction pin
-     movy(iFwd, 5, 6);
+     movy(iFwd, 1, 6);
      txtMsg = "";
-     // return;
+     return;
    }   
-   // Case 4 - bacy
+   // Case 4 - bwdy
    if(txtMsg == "bwdy") {
      // Set direction pin
-     movy(iBwd, 5, 6);
+     movy(iBwd, 1, 6);
      txtMsg = "";
-     // return;
+     return;
    }   
    // Case 5 - homeX
    if(txtMsg == "homeX") {
@@ -222,7 +222,79 @@ void processMsg(String &txtMsg) {
      txtMsg = "";
      // return;
    }    
+
+    // Case 18 - slide6
+   if(txtMsg == "slide6") {
+     // Set direction pin
+     slideFret(6);
+     txtMsg = "";
+     // return;
+   }
+
+    // Case 18 - slide7
+   if(txtMsg == "slide7") {
+     // Set direction pin
+     slideFret(7);
+     txtMsg = "";
+     // return;
+   }
+
+    // Case 18 - slide8
+   if(txtMsg == "slide8") {
+     // Set direction pin
+     slideFret(8);
+     txtMsg = "";
+     // return;
+   }
    
+    // Case 18 - slide9
+   if(txtMsg == "slide9") {
+     // Set direction pin
+     slideFret(9);
+     txtMsg = "";
+     // return;
+   }
+   
+       // Case 18 - slide10
+   if(txtMsg == "slide10") {
+     // Set direction pin
+     slideFret(10);
+     txtMsg = "";
+     // return;
+   }
+   
+      
+   
+   // Case 19 - fwdx10
+   txtMsg.trim();
+   if(txtMsg == "fwdx10") {
+     // Set direction pin
+     movx(iFwd, 10, 6);
+     txtMsg = "";
+    return;
+   }
+   // Case 20 - bwdx10
+   if(txtMsg == "bwdx10") {
+     // Set direction pin
+    movx(iBwd, 10, 6);
+    txtMsg = "";
+    return;
+   }   
+   // Case 3 - fwdy10
+   if(txtMsg == "fwdy10") {
+     // Set direction pin
+     movy(iFwd, 10, 6);
+     txtMsg = "";
+     return;
+   }   
+   // Case 4 - bwdy10
+   if(txtMsg == "bwdy10") {
+     // Set direction pin
+     movy(iBwd, 10, 6);
+     txtMsg = "";
+     return;
+   }
+
    //pluckString
    
    // Case list - list all functions
@@ -344,9 +416,36 @@ void pluckString(int iIndex) {
 
 int getXPos(int iIndex) {
   // dummy return value
-  return (iIndex) * 50;
+  // if(iIndex == 1
+  // return (iIndex) * 50;
   // create lookup table from calibration 
   
+  switch (iIndex) {
+    case 1:
+      return 10;
+    case 2:
+      return 185;
+    case 3:
+      return 350;
+    case 4:
+      return 495;
+    case 5:
+      return 640;      
+    case 6:
+      return 780;      
+    case 7:
+      return 905;      
+    case 8:
+      return 1030;
+    case 9:
+      return 1155;
+    case 10:
+      return 1280;      
+    default: 
+      // if nothing else matches, do the default
+      // default is optional
+    break;
+  }
   
 }
 
