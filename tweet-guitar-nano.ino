@@ -17,6 +17,9 @@ int iBwd = 0;
 // End Stop expected threshold AD Conversion
 int iThreshold = 130;
 
+// Serial debug. Set to 1 to debug.
+#define SERIAL_DEBUG 0
+
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
@@ -95,6 +98,13 @@ void processMsg(String &txtMsg) {
      txtMsg = "";
      // return;
    }      
+   // Case 6 - homeY
+   if(txtMsg == "homeY") {
+     // Set direction pin
+     homeY();
+     txtMsg = "";
+     // return;
+   }   
    // Case list - list all functions
    
    // Case else - no function found
@@ -116,15 +126,16 @@ void processMsg(String &txtMsg) {
 }
 
 void movx(int iDir, int iSteps, int iDelay) {
+  if(SERIAL_DEBUG) {
     Serial.print("Echoing back message: *");
     Serial.print(txtMsg);
     Serial.println("*");
-    digitalWrite(iXDirPin, iDir);
-   
-    for(int i = 0; i < iSteps; i++) {
-      digitalWrite(iXStepPin, LOW);
-      delay(iDelay);
-      digitalWrite(iXStepPin, HIGH);
+  } 
+  digitalWrite(iXDirPin, iDir);
+  for(int i = 0; i < iSteps; i++) {
+    digitalWrite(iXStepPin, LOW);
+    delay(iDelay);
+    digitalWrite(iXStepPin, HIGH);
   }
 }
 
@@ -138,7 +149,7 @@ void movy(int iDir, int iSteps, int iDelay) {
       digitalWrite(iYStepPin, LOW);
       delay(iDelay);
       digitalWrite(iYStepPin, HIGH);
-  }
+    }
 }
 
 bool bEnd() {
@@ -149,7 +160,13 @@ bool bEnd() {
 }
 
 void homeX() {
-  while(!bEnd) {
-    movx(iBwd, 1, 10);  
+  while(!(bEnd())) {
+    movx(iBwd, 1, 1);  
+  } 
+}
+
+void homeY() {
+  while(!(bEnd())) {
+    movy(iBwd, 1, 1000);  
   } 
 }
