@@ -87,7 +87,7 @@ void processMsg(String &txtMsg) {
    txtMsg.trim();
    if(txtMsg == "fwdx") {
      // Set direction pin
-     movx(iFwd, 200, 6);
+     movx(iFwd, 5, 6);
      txtMsg = "";
     // return;
    }
@@ -134,29 +134,55 @@ void processMsg(String &txtMsg) {
      // return;
    }
    
-   // Case 8 - PluckE
-   if(txtMsg == "PluckE") {
+   // Case 8 - pluck1
+   if(txtMsg == "pluck1") {
      // Set direction pin
-     PluckE();
-     txtMsg = "";
-     // return;
-   }
-   
-   // Case 9 - moveOneStringFWD
-   if(txtMsg == "moveOneStringFWD") {
-     // Set direction pin
-     moveOneStringFWD();
-     txtMsg = "";
-     // return;
-   }
-   
-   // Case 10 - moveOneStringBWD
-   if(txtMsg == "moveOneStringBWD") {
-     // Set direction pin
-     moveOneStringBWD();
+     pluckString(1);
      txtMsg = "";
      // return;
    }   
+   
+   // Case 9 - pluck2
+   if(txtMsg == "pluck2") {
+     // Set direction pin
+     pluckString(2);
+     txtMsg = "";
+     // return;
+   }   
+   
+   // Case 10 - pluck3
+   if(txtMsg == "pluck3") {
+     // Set direction pin
+     pluckString(3);
+     txtMsg = "";
+     // return;
+   }      
+   
+   // Case 11 - pluck4
+   if(txtMsg == "pluck4") {
+     // Set direction pin
+     pluckString(4);
+     txtMsg = "";
+     // return;
+   }   
+   
+     // Case 12 - pluck5
+   if(txtMsg == "pluck5") {
+     // Set direction pin
+     pluckString(5);
+     txtMsg = "";
+     // return;
+   }   
+   
+    // Case 13 - pluck6
+   if(txtMsg == "pluck6") {
+     // Set direction pin
+     pluckString(6);
+     txtMsg = "";
+     // return;
+   }   
+   
+   //pluckString
    
    // Case list - list all functions
    
@@ -184,8 +210,6 @@ void movx(int iDir, int iSteps, int iDelay) {
       break; 
     }
   }
-  
-  
 }
 
 void movy(int iDir, int iSteps, int iDelay) {
@@ -240,125 +264,41 @@ void homeXY() {
   homeX();
 }
 
-void PluckEOld() {
-  // check position and compute distance
-  int iMove;
-  if(iYPos > iYInitPos) {
-    iMove = iYPos - iPluckE;
-    movy(iBwd, iPluckE, 1);
-    iYPos = iYInitPos;
-    return;
-  }
-  // Otherwise, we are in the init position, just pluck
-  // decide if going fwd or bwd
-   movy(iFwd, iPluckE, 1);
-   iYPos = iYInitPos + iPluckE;
-}
-
-void PluckEOld2() {
-  // we are at the top
-  if(iYPos == iYInitPos) {
-    movy(iFwd, iPluckE, 1);
-    iYPos = iYInitPos + iPluckE;    
-    return;
-  } 
-  // we are above A
-  if(iYPos == iYInitPos + iPluckE) {
-    movy(iBwd, iPluckE, 1);
-    iYPos = iYInitPos;
-    return;    
-  }
-  // we are further down
-  if(iYPos > iYInitPos + iPluckE) {
-    int iMove = iYPos - iYInitPos;
-    movy(iBwd, iPluckE, 1);
-    iYPos = iYInitPos;
-    return;
-  }
-}
-
-void PluckE() {
- // if we are at top
- // move forward one string
- if(iYPos == iYInitPos) {
-    movy(iFwd, iOneStringStep, 1);
-    iYPos = iYPos + iOneStringStep;
-    Serial.print("Current absolute position = ");
-    Serial.println(iYPos);
-   return;   
- } 
- // anything else, move back to iYinitPos
- if(iYPos > iYInitPos) {
-    int iMove = iYPos - iYInitPos;
-    movy(iBwd, iMove, 1);
-    iYPos = iYInitPos;
-    return;   
- }
-}
-
 void pluckString(int iIndex) {
    // iIndex
    // 1-E, 2-A, 3-D, 4-G, 5-B, 6-E
-   int iMove;
-   if(iYRelPos < (iOneStep * iIndex)) {
-      iMove = (iOneStep * iIndex) - iYRelPos;
-      movy(iFwd, iMove, 1);
-      iYRelPos =+ 
-   }
-}
-
-
-void Pluck(int iPluckIndex) {
- // if we are at top
- // move forward one string
- if(iYPos == iYInitPos) {
-    movy(iFwd, iOneStringStep, 1);
-    iYPos = iYPos + iOneStringStep;
-    Serial.print("Current absolute position = ");
-    Serial.println(iYPos);
-   return;   
- } 
- // anything else, move back to iYinitPos
- if(iYPos > iYInitPos) {
-    int iMove = iYPos - iYInitPos;
-    movy(iBwd, iMove, 1);
-    iYPos = iYInitPos;
-    return;   
- }
-}
-
-void moveOneStringFWD() {
-    movy(iFwd, iOneStringStep, 1);
-    iYPos = iYPos + iOneStringStep;
-    Serial.print("Current absolute position = ");
-    Serial.println(iYPos);    
-}
-
-void moveOneStringBWD() {
-    movy(iBwd, iOneStringStep, 1);
-    iYPos = iYPos - iOneStringStep;
-    Serial.print("Current absolute position = ");
-    Serial.println(iYPos);    
-}
-
-void PluckA() {
-  // check position and compute distance
-  if(iYPos < (iPluckA + iYInitPos)) {
-    int iMove = iYPos - iPluckA;
-    movy(iBwd, iPluckA, 1);
-    iYPos = iYInitPos;
-    return;
-  }
-  // if
-  // Otherwise, we are in the init position, just pluck
-  // decide if going fwd or bwd
    
-   movy(iFwd, iPluckE, 1);
-   iYPos = iYInitPos + iPluckE;
+   // Safety net
+   if(iIndex > 6) {
+     return;
+   }
+   
+   int iMove;
+   
+   // Downwards movement
+   if(iYRelPos < (iOneStringStep * iIndex)) {
+      iMove = (iOneStringStep * iIndex) - iYRelPos;
+      movy(iFwd, iMove, 1);
+      iYRelPos = iYRelPos + iMove;
+      if(SERIAL_DEBUG) {
+        Serial.print("Current relative position = ");
+        Serial.println(iYRelPos);
+      }
+      return;     
+   }
+   
+   // Upwards movement
+   if(iYRelPos >= (iOneStringStep * iIndex)) {
+      iMove = iYRelPos - (iOneStringStep * (iIndex - 1));
+      movy(iBwd, iMove, 1);
+      iYRelPos = iYRelPos - iMove;
+      if(SERIAL_DEBUG) {
+        Serial.print("Current relative position = ");
+        Serial.println(iYRelPos);
+      }
+      return;     
+   }   
 }
 
-/*
-void movAbsPos(int iPos) {
-  if(iPos 
-}
-*/
+
+
