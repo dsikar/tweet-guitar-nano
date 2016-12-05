@@ -24,6 +24,21 @@ int iThreshold = 130;
 // Serial debug. Set to 1 to debug.
 #define SERIAL_DEBUG 0
 
+// Current X and Y position markers
+
+int iXPos;
+int iYPos;
+int iXInitPos = 25;
+int iYInitPos = 52;
+
+// Fret position mapping
+
+// String position mapping
+
+int iOneStringSteps = 57;
+int iPluckE = iOneStringSteps;
+int iPluckA = iOneStringSteps * 2;
+
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
@@ -70,7 +85,7 @@ void processMsg(String &txtMsg) {
    txtMsg.trim();
    if(txtMsg == "fwdx") {
      // Set direction pin
-     movx(iFwd, 5, 6);
+     movx(iFwd, 200, 6);
      txtMsg = "";
     // return;
    }
@@ -116,21 +131,17 @@ void processMsg(String &txtMsg) {
      txtMsg = "";
      // return;
    }
+   // Case 8 - PluckE
+   if(txtMsg == "PluckE") {
+     // Set direction pin
+     PluckE();
+     txtMsg = "";
+     // return;
+   }
    // Case list - list all functions
    
    // Case else - no function found
    
-   
-   /*
-    Serial.print("Echoing back message: *");
-    Serial.print(txtMsg);
-    Serial.println("*");
-    txtMsg.trim();
-    if(txtMsg == "stuff") {
-    Serial.println("Msg == stuff");
-    
-    }
-    */
     txtMsg = ""; 
     
 
@@ -188,7 +199,8 @@ void homeX() {
     movx(iBwd, 1, 1);  
   }
   bSafe = false;
-  movx(iFwd, 25, 1);
+  movx(iFwd, iXInitPos, 1);
+  iXPos = iXInitPos;
   bSafe = true;  
 }
 
@@ -197,11 +209,20 @@ void homeY() {
     movy(iBwd, 1, 1);  
   } 
   bSafe = false;
-  movy(iFwd, 45, 1);
+  movy(iFwd, iYInitPos , 1);
+  iYPos = iYInitPos; 
   bSafe = true;  
 }
 
 void homeXY() {
   homeY();
   homeX();
+}
+
+void PluckE() {
+  // check position and compute distance
+  
+  // decide if going fwd or bwd
+  
+   movy(iFwd, iPluckE, 1);
 }
