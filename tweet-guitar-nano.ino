@@ -1,3 +1,6 @@
+/**********************
+START GUITAR INIT VALS
+**********************/
 
 // To accept commands via serial monitor
 String txtMsg = ""; 
@@ -6,6 +9,7 @@ String txtMsg = "";
 int iXStepPin = 16;
 int iXDirPin = 5;
 int iYStepPin = 4;
+
 // Changed to pin 2 to avoid potential Serial RX TX pin conflicts
 // int iYDirPin = 0;
 int iYDirPin = 2;
@@ -14,22 +18,20 @@ int iYDirPin = 2;
 int iFwd = 1;
 int iBwd = 0;
 
-// Exception case flag for home
-
+// Exception case flag for homefwdx
 bool bSafe;
 
 // End Stop expected threshold AD Conversion
 int iThreshold = 130;
 
 // Serial debug. Set to 1 to debug.
-#define SERIAL_DEBUG 0
+#define SERIAL_DEBUG 1
 
 // Current X and Y position markers
-
 int iXPos;
 int iYPos;
 int iXInitPos = 25;
-int iYInitPos = 56;
+int iYInitPos = 36;
 // Relative origin
 int iYRelPos;
 int iXRelPos;
@@ -37,10 +39,13 @@ int iXRelPos;
 // Fret position mapping
 
 // String position mapping
-
 int iOneStringStep = 50;
-int iPluckE = iOneStringStep;
-int iPluckA = iOneStringStep * 2;
+//int iPluckE = iOneStringStep;
+//int iPluckA = iOneStringStep * 2;
+
+/**********************
+END GUITAR INIT VALS
+**********************/
 
 void setup() {
   // put your setup code here, to run once:
@@ -58,13 +63,6 @@ void initGuitar() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-
-  //Serial.println(analogRead(0));
-  //delay(1000);
-  
-  
-  
   // receive message from serial and deal with it
   // 1. SEND - Assemble message sent via Serial Monitor
   while (Serial.available() > 0) {
@@ -81,237 +79,14 @@ void loop() {
   }
 }
 
-void processMsg(String &txtMsg) {
-   // Echo message to Serial Monitor. 
-   
-   // Case 1 - fwdx
-   txtMsg.trim();
-   if(txtMsg == "fwdx") {
-     // Set direction pin
-     movx(iFwd, 1, 6);
-     txtMsg = "";
-    return;
-   }
-   // Case 2 - bwdx
-   if(txtMsg == "bwdx") {
-     // Set direction pin
-    movx(iBwd, 1, 6);
-    txtMsg = "";
-    return;
-   }   
-   // Case 3 - fwdy
-   if(txtMsg == "fwdy") {
-     // Set direction pin
-     movy(iFwd, 1, 6);
-     txtMsg = "";
-     return;
-   }   
-   // Case 4 - bwdy
-   if(txtMsg == "bwdy") {
-     // Set direction pin
-     movy(iBwd, 1, 6);
-     txtMsg = "";
-     return;
-   }   
-   // Case 5 - homeX
-   if(txtMsg == "homeX") {
-     // Set direction pin
-     homeX();
-     txtMsg = "";
-     // return;
-   }      
-   // Case 6 - homeY
-   if(txtMsg == "homeY") {
-     // Set direction pin
-     homeY();
-     txtMsg = "";
-     // return;
-   }   
-   // Case 7 - homeXY
-   if(txtMsg == "homeXY") {
-     // Set direction pin
-     homeXY();
-     txtMsg = "";
-     // return;
-   }
-   
-   // Case 8 - pluck1
-   if(txtMsg == "pluck1") {
-     // Set direction pin
-     pluckString(1);
-     txtMsg = "";
-     // return;
-   }   
-   
-   // Case 9 - pluck2
-   if(txtMsg == "pluck2") {
-     // Set direction pin
-     pluckString(2);
-     txtMsg = "";
-     // return;
-   }   
-   
-   // Case 10 - pluck3
-   if(txtMsg == "pluck3") {
-     // Set direction pin
-     pluckString(3);
-     txtMsg = "";
-     // return;
-   }      
-   
-   // Case 11 - pluck4
-   if(txtMsg == "pluck4") {
-     // Set direction pin
-     pluckString(4);
-     txtMsg = "";
-     // return;
-   }   
-   
-     // Case 12 - pluck5
-   if(txtMsg == "pluck5") {
-     // Set direction pin
-     pluckString(5);
-     txtMsg = "";
-     // return;
-   }   
-   
-    // Case 13 - pluck6
-   if(txtMsg == "pluck6") {
-     // Set direction pin
-     pluckString(6);
-     txtMsg = "";
-     // return;
-   } 
- 
-     // Case 14 - slide1
-   if(txtMsg == "slide1") {
-     // Set direction pin
-     slideFret(1);
-     txtMsg = "";
-     // return;
-   }    
- 
-      // Case 15 - slide2
-   if(txtMsg == "slide2") {
-     // Set direction pin
-     slideFret(2);
-     txtMsg = "";
-     // return;
-   }  
- 
-   // Case 16 - slide3
-   if(txtMsg == "slide3") {
-     // Set direction pin
-     slideFret(3);
-     txtMsg = "";
-     // return;
-   }  
-   
-   // Case 17 - slide4
-   if(txtMsg == "slide4") {
-     // Set direction pin
-     slideFret(4);
-     txtMsg = "";
-     // return;
-   }
- 
-    // Case 18 - slide5
-   if(txtMsg == "slide5") {
-     // Set direction pin
-     slideFret(5);
-     txtMsg = "";
-     // return;
-   }    
-
-    // Case 18 - slide6
-   if(txtMsg == "slide6") {
-     // Set direction pin
-     slideFret(6);
-     txtMsg = "";
-     // return;
-   }
-
-    // Case 18 - slide7
-   if(txtMsg == "slide7") {
-     // Set direction pin
-     slideFret(7);
-     txtMsg = "";
-     // return;
-   }
-
-    // Case 18 - slide8
-   if(txtMsg == "slide8") {
-     // Set direction pin
-     slideFret(8);
-     txtMsg = "";
-     // return;
-   }
-   
-    // Case 18 - slide9
-   if(txtMsg == "slide9") {
-     // Set direction pin
-     slideFret(9);
-     txtMsg = "";
-     // return;
-   }
-   
-       // Case 18 - slide10
-   if(txtMsg == "slide10") {
-     // Set direction pin
-     slideFret(10);
-     txtMsg = "";
-     // return;
-   }
-   
-      
-   
-   // Case 19 - fwdx10
-   txtMsg.trim();
-   if(txtMsg == "fwdx10") {
-     // Set direction pin
-     movx(iFwd, 10, 6);
-     txtMsg = "";
-    return;
-   }
-   // Case 20 - bwdx10
-   if(txtMsg == "bwdx10") {
-     // Set direction pin
-    movx(iBwd, 10, 6);
-    txtMsg = "";
-    return;
-   }   
-   // Case 3 - fwdy10
-   if(txtMsg == "fwdy10") {
-     // Set direction pin
-     movy(iFwd, 10, 6);
-     txtMsg = "";
-     return;
-   }   
-   // Case 4 - bwdy10
-   if(txtMsg == "bwdy10") {
-     // Set direction pin
-     movy(iBwd, 10, 6);
-     txtMsg = "";
-     return;
-   }
-
-   //pluckString
-   
-   // Case list - list all functions
-   
-   // Case else - no function found
-   
-    txtMsg = ""; 
-    
-
-}
-
 void movx(int iDir, int iSteps, int iDelay) {
+  /*
   if(SERIAL_DEBUG) {
     Serial.print("Echoing back message: *");
     Serial.print(txtMsg);
     Serial.println("*");
   } 
+  */
   
   digitalWrite(iXDirPin, iDir); 
   
@@ -326,11 +101,13 @@ void movx(int iDir, int iSteps, int iDelay) {
 }
 
 void movy(int iDir, int iSteps, int iDelay) {
+  /*
   if(SERIAL_DEBUG) {
     Serial.print("Echoing back message: *");
     Serial.print(txtMsg);
     Serial.println("*");
   }    
+  */
    
   digitalWrite(iYDirPin, iDir);
 
@@ -392,6 +169,10 @@ void pluckString(int iIndex) {
    // Downwards movement
    if(iYRelPos < (iOneStringStep * iIndex)) {
       iMove = (iOneStringStep * iIndex) - iYRelPos;
+      if(SERIAL_DEBUG) {
+        Serial.print("Total Y move = ");
+        Serial.println(iMove);
+      }      
       movy(iFwd, iMove, 1);
       iYRelPos = iYRelPos + iMove;
       if(SERIAL_DEBUG) {
@@ -438,9 +219,13 @@ int getXPos(int iIndex) {
     case 8:
       return 1030;
     case 9:
-      return 1155;
+      return 1130;
     case 10:
-      return 1280;      
+      return 1230;      
+    case 11:
+      return 1320;
+    case 12:
+      return 1420; 
     default: 
       // if nothing else matches, do the default
       // default is optional
@@ -482,3 +267,5 @@ void slideFret(int iIndex) {
       return;
    }
 }
+
+
